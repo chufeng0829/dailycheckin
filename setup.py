@@ -1,19 +1,13 @@
-# -*- coding: utf-8 -*-
-import io
 import os
-import sys
-from os import walk
-from os.path import isfile, join
-from shutil import rmtree
 
-from setuptools import Command, find_packages, setup
+from setuptools import find_packages, setup
 
 NAME = "dailycheckin"
 FOLDER = "dailycheckin"
 DESCRIPTION = "dailycheckin"
 EMAIL = "133397418@qq.com"
 AUTHOR = "Sitoi"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = ">=3.9.0"
 VERSION = None
 
 
@@ -35,7 +29,7 @@ REQUIRED = read_requirements("requirements.txt")
 here = os.path.abspath(os.path.dirname(__file__))
 
 try:
-    with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
+    with open(os.path.join(here, "README.md"), encoding="utf-8") as f:
         long_description = "\n" + f.read()
 except FileNotFoundError:
     long_description = DESCRIPTION
@@ -51,44 +45,13 @@ else:
 def package_files(directories):
     paths = []
     for item in directories:
-        if isfile(item):
-            paths.append(join("..", item))
+        if os.path.isfile(item):
+            paths.append(os.path.join("..", item))
             continue
-        for path, directories, filenames in walk(item):
+        for path, directories, filenames in os.walk(item):
             for filename in filenames:
-                paths.append(join("..", path, filename))
+                paths.append(os.path.join("..", path, filename))
     return paths
-
-
-class UploadCommand(Command):
-    description = "Build and publish the package."
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print("\033[1m{0}\033[0m".format(s))
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        try:
-            self.status("Removing previous builds…")
-            rmtree(os.path.join(here, "dist"))
-        except OSError:
-            pass
-
-        self.status("Building Source and Wheel (universal) distribution…")
-        os.system("{0} setup.py sdist bdist_wheel --universal".format(sys.executable))
-
-        self.status("Uploading the package to PyPI via Twine…")
-        os.system("twine upload dist/*")
-
-        sys.exit()
 
 
 setup(
@@ -110,12 +73,9 @@ setup(
     entry_points={"console_scripts": ["dailycheckin = dailycheckin.main:checkin"]},
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
     ],
-    cmdclass={"upload": UploadCommand},
 )

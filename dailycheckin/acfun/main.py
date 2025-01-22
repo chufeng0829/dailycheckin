@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import os
 import re
@@ -169,7 +168,10 @@ class AcFun(CheckIn):
                 throwbanana_msg,
             ] + info_msg
         else:
-            msg = [{"name": "帐号信息", "value": phone}, {"name": "错误信息", "value": res}]
+            msg = [
+                {"name": "帐号信息", "value": phone},
+                {"name": "错误信息", "value": res},
+            ]
         msg = "\n".join([f"{one.get('name')}: {one.get('value')}" for one in msg])
         return msg
 
@@ -177,7 +179,6 @@ class AcFun(CheckIn):
 if __name__ == "__main__":
     with open(
         os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json"),
-        "r",
         encoding="utf-8",
     ) as f:
         datas = json.loads(f.read())

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import os
 import random
@@ -20,9 +19,9 @@ class MiMotion(CheckIn):
         }
 
     def get_time(self):
-        url = "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp"
+        url = "https://f.m.suning.com/api/ct.do"
         response = requests.get(url, headers=self.headers).json()
-        t = response["data"]["t"]
+        t = response["currentTime"]
         return t
 
     def get_app_token(self, login_token):
@@ -33,7 +32,11 @@ class MiMotion(CheckIn):
 
     @staticmethod
     def login(phone, password):
-        url1 = f"https://api-user.huami.com/registrations/+86{phone}/tokens"
+        if "@" in phone:
+            pass
+        else:
+            phone = f"+86{phone}"
+        url1 = f"https://api-user.huami.com/registrations/{phone}/tokens"
         headers = {
             "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
             "User-Agent": "MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)",
@@ -61,7 +64,7 @@ class MiMotion(CheckIn):
             "device_id": "10E2A98F-D36F-4DF1-A7B9-3FBD8FBEB800",
             "device_model": "phone",
             "grant_type": "access_token",
-            "third_name": "huami_phone",
+            "third_name": "email" if "@" in phone else "huami_phone",
         }
         r2 = requests.post(url=url2, data=data2, headers=headers).json()
         login_token = r2["token_info"]["login_token"]
@@ -116,7 +119,6 @@ class MiMotion(CheckIn):
 if __name__ == "__main__":
     with open(
         os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json"),
-        "r",
         encoding="utf-8",
     ) as f:
         datas = json.loads(f.read())
